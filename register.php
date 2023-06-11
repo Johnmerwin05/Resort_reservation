@@ -1,0 +1,81 @@
+<?php
+include('config.php');
+
+if(isset($_POST['submit'])){
+
+   $name = mysqli_real_escape_string($connection, $_POST['name']);
+   $email = mysqli_real_escape_string($connection, $_POST['email']);
+   $password = md5($_POST['password']);
+   $cpassword = md5($_POST['cpassword']);
+   $type = $_POST['type'];
+
+
+    $select =  "SELECT * FROM users WHERE email = `$email` && password = '$password' ";
+
+    $result = mysqli_query($connection, $select);
+
+    if(mysqli_query($connection, $select)> 0){
+
+    
+
+      $error[] = 'user already exist!';
+
+   }else{
+
+      if($password != $cpassword){
+         $error[] = 'password not matched!';
+      }else{
+        $insert = "INSERT INTO users(name, email, password, type) VALUES('$name','$email','$password','$type')";
+        mysqli_query($connection, $insert);
+         header('location:login.php');
+      }
+   }
+
+};
+
+
+?>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>B-Boyz Login or Sign Up</title>
+
+    <!-- custom css file link  -->
+   <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<div class="form-container">
+
+   <form action="" method="post">
+      <h1>register now</h1>
+      <?php
+      if(isset($error)){
+         foreach($error as $error){
+            echo '<span class="error-msg">'.$error.'</span>';
+         };
+      };
+      ?>
+      <input type="text" name="name" required placeholder="enter your name">
+      <input type="email" name="email" required placeholder="enter your email">
+      <input type="password" name="password" required placeholder="enter your password">
+      <input type="password" name="cpassword" required placeholder="confirm your password">
+      <select name="type"> 
+        <option value= "admin">admin</option> 
+        <option value= "user">user</option> 
+      </select> 
+      <input type="submit" name="submit" value="REGISTER" class="form-btn">
+      <p>already have an account? <a href="login.php">login now</a></p>
+   </form>
+</div>
+
+</body>
+</html>
+
+</body>
+</html>
